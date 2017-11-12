@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/nathan-osman/sprise/db"
+	"github.com/nathan-osman/sprise/queue"
 	"github.com/nathan-osman/sprise/server"
 	"github.com/urfave/cli"
 )
@@ -29,6 +30,26 @@ func main() {
 			Usage:  "database driver",
 		},
 		cli.StringFlag{
+			Name:   "queue-access-key",
+			EnvVar: "QUEUE_ACCESS_KEY",
+			Usage:  "S3 / Spaces access key",
+		},
+		cli.StringFlag{
+			Name:   "queue-bucket",
+			EnvVar: "QUEUE_BUCKET",
+			Usage:  "S3 / Spaces bucket name",
+		},
+		cli.StringFlag{
+			Name:   "queue-endpoint",
+			EnvVar: "QUEUE_ENDPOINT",
+			Usage:  "S3 / Spaces endpoint",
+		},
+		cli.StringFlag{
+			Name:   "queue-secret-access-key",
+			EnvVar: "QUEUE_SECRET_ACCESS_KEY",
+			Usage:  "S3 / Spaces secret access key",
+		},
+		cli.StringFlag{
 			Name:   "server-addr",
 			Value:  ":8000",
 			EnvVar: "SERVER_ADDR",
@@ -47,9 +68,23 @@ func main() {
 		}
 		defer conn.Close()
 
+		// Initialize the upload queue
+		q, err := queue.New(&queue.Config{
+			Endpoint:        c.String("queue-endpoint"),
+			AccessKey:       c.String("queue-access-key"),
+			SecretAccessKey: c.String("queue-secret-access-key"),
+			Bucket:          c.String("queue-bucket"),
+			Conn:            conn,
+		})
+		if err != nil {
+			return err
+		}
+		defer q.Close()
+
 		// Initialize the server
 		s, err := server.New(&server.Config{
 			Addr: c.String("server-addr"),
+			Conn: conn,
 		})
 		if err != nil {
 			return err
