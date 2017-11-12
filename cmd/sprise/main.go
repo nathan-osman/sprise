@@ -7,6 +7,7 @@ import (
 	"syscall"
 
 	"github.com/nathan-osman/sprise/db"
+	"github.com/nathan-osman/sprise/server"
 	"github.com/urfave/cli"
 )
 
@@ -27,6 +28,12 @@ func main() {
 			EnvVar: "DB_DRIVER",
 			Usage:  "database driver",
 		},
+		cli.StringFlag{
+			Name:   "server-addr",
+			Value:  ":8000",
+			EnvVar: "SERVER_ADDR",
+			Usage:  "server address",
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 
@@ -39,6 +46,15 @@ func main() {
 			return err
 		}
 		defer conn.Close()
+
+		// Initialize the server
+		s, err := server.New(&server.Config{
+			Addr: c.String("server-addr"),
+		})
+		if err != nil {
+			return err
+		}
+		defer s.Close()
 
 		// Wait for SIGINT or SIGTERM
 		sigChan := make(chan os.Signal)
