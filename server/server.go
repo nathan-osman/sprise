@@ -6,12 +6,14 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/nathan-osman/sprise/db"
+	"github.com/sirupsen/logrus"
 )
 
 // Server provides the web interface for the application.
 type Server struct {
 	listener  net.Listener
 	router    *mux.Router
+	log       *logrus.Entry
 	conn      *db.Conn
 	stoppedCh chan bool
 }
@@ -27,6 +29,7 @@ func New(cfg *Config) (*Server, error) {
 		s = &Server{
 			listener:  l,
 			router:    r,
+			log:       logrus.WithField("context", "server"),
 			conn:      cfg.Conn,
 			stoppedCh: make(chan bool),
 		}
@@ -36,8 +39,10 @@ func New(cfg *Config) (*Server, error) {
 	)
 	go func() {
 		defer close(s.stoppedCh)
+		defer s.log.Info("server has stopped")
+		s.log.Info("starting server...")
 		if err := server.Serve(l); err != nil {
-			//...
+			s.log.Error(err.Error())
 		}
 	}()
 	return s, nil
