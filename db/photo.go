@@ -12,4 +12,5 @@ type Photo struct {
 	Width    int       `gorm:"not null"`
 	Height   int       `gorm:"not null"`
 	Camera   string    `gorm:"not null"`
+	Tags     []*Tag    `gorm:"many2many:photo_tags;"`
 }
