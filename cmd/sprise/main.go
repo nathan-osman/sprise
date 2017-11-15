@@ -35,6 +35,11 @@ func main() {
 			EnvVar: "SERVER_ADDR",
 			Usage:  "server address",
 		},
+		cli.StringFlag{
+			Name:   "server-secret-key",
+			EnvVar: "SERVER_SECRET_KEY",
+			Usage:  "secret key used for cookies",
+		},
 	}
 	app.Action = func(c *cli.Context) error {
 
@@ -64,8 +69,9 @@ func main() {
 
 		// Initialize the server
 		s, err := server.New(&server.Config{
-			Addr: c.String("server-addr"),
-			Conn: conn,
+			Addr:      c.String("server-addr"),
+			SecretKey: c.String("server-secret-key"),
+			Conn:      conn,
 		})
 		if err != nil {
 			return err
