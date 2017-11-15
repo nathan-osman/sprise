@@ -6,9 +6,5 @@ import (
 
 // Config provides parameters for the upload queue.
 type Config struct {
-	Endpoint        string
-	AccessKey       string
-	SecretAccessKey string
-	Bucket          string
-	Conn            *db.Conn
+	Conn *db.Conn
 }
