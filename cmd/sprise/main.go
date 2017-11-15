@@ -48,6 +48,11 @@ func main() {
 		}
 		defer conn.Close()
 
+		// Perform all pending migrations
+		if err := conn.Migrate(); err != nil {
+			return err
+		}
+
 		// Initialize the upload queue
 		q, err := queue.New(&queue.Config{
 			Conn: conn,
