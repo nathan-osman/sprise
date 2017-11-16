@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+  {{ block.Super|safe }}
+  <style>
+    .segment.uploader {
+      color: #e5e5e5;
+      height: 400px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="ui container">
+    <div id="uploader"></div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  {{ block.Super|safe }}
+  <script src="/static/js/fine-uploader.min.js"></script>
+  <script type="text/template" id="qq-template">
+    <div class="qq-uploader-selector ui two column stackable grid">
+      <div class="column">
+        <div class="qq-upload-drop-area-selector ui center aligned middle aligned uploader segment grid">
+          <div class="column">
+            <h1>Drag and Drop</h1>
+          </div>
+        </div>
+      </div>
+      <div class="column">
+        <div class="qq-upload-list-selector ui vertical segment">
+          <div>
+            <p class="qq-upload-file-selector"></p>
+            <div class="qq-progress-bar-container-selector ui progress">
+              <div class="bar">
+                <div class="qq-progress-bar-selector progress"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+  <script>
+    $(function() {
+
+      // Create the uploader
+      var uploader = new qq.FineUploader({
+        element: $('#uploader').get(0)
+      });
+
+    });
+  </script>
+{% endblock %}
