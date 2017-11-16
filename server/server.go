@@ -45,7 +45,7 @@ func New(cfg *Config) (*Server, error) {
 	)
 	s.router.HandleFunc("/", s.index)
 	s.router.HandleFunc("/login", s.login)
-	s.router.HandleFunc("/logout", s.logout)
+	s.router.HandleFunc("/logout", s.requireUser(s.logout))
 	r.PathPrefix("/static").Handler(http.FileServer(HTTP))
 	r.PathPrefix("/").Handler(s)
 	go func() {

@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"net/http"
+	"net/url"
 
 	"github.com/flosch/pongo2"
 	"github.com/nathan-osman/sprise/db"
@@ -28,6 +29,18 @@ func (s *Server) loadUser(r *http.Request) *http.Request {
 		}
 	}
 	return r
+}
+
+// requireUser prevents a visitor from accessing a page before loggin in.
+func (s *Server) requireUser(fn http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Context().Value(contextUser) == nil {
+			u := url.QueryEscape(r.URL.RequestURI())
+			http.Redirect(w, r, "/login?url="+u, http.StatusFound)
+		} else {
+			fn(w, r)
+		}
+	}
 }
 
 type loginForm struct {
@@ -68,7 +81,11 @@ func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 			session, _ := s.store.Get(r, sessionName)
 			session.Values[sessionUserID] = u.ID
 			session.Save(r, w)
-			http.Redirect(w, r, "/", http.StatusFound)
+			redir := r.URL.Query().Get("url")
+			if redir == "" {
+				redir = "/"
+			}
+			http.Redirect(w, r, redir, http.StatusFound)
 			return
 		}
 	}
