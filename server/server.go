@@ -45,6 +45,7 @@ func New(cfg *Config) (*Server, error) {
 	)
 	s.router.HandleFunc("/", s.index)
 	s.router.HandleFunc("/login", s.login)
+	s.router.HandleFunc("/logout", s.logout)
 	r.PathPrefix("/static").Handler(http.FileServer(HTTP))
 	r.PathPrefix("/").Handler(s)
 	go func() {
@@ -60,15 +61,15 @@ func New(cfg *Config) (*Server, error) {
 
 // ServeHTTP does preparatory work for the handlers, attempting to load the
 // current user from the database.
-func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	if req.Method == http.MethodPost {
-		if err := req.ParseForm(); err != nil {
+func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		if err := r.ParseForm(); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 	}
-	req = s.loadUser(req)
-	s.router.ServeHTTP(w, req)
+	r = s.loadUser(r)
+	s.router.ServeHTTP(w, r)
 }
 
 // Close shuts down the web server.

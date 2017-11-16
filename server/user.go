@@ -19,15 +19,15 @@ const (
 
 // loadUser checks the session for the ID of the current user and attempts to
 // load the model and add it to the request context.
-func (s *Server) loadUser(req *http.Request) *http.Request {
-	session, _ := s.store.Get(req, sessionName)
+func (s *Server) loadUser(r *http.Request) *http.Request {
+	session, _ := s.store.Get(r, sessionName)
 	if v, _ := session.Values[sessionUserID]; v != nil {
 		u := &db.User{}
 		if err := s.conn.First(u, v).Error; err == nil {
-			req = req.WithContext(context.WithValue(req.Context(), contextUser, u))
+			r = r.WithContext(context.WithValue(r.Context(), contextUser, u))
 		}
 	}
-	return req
+	return r
 }
 
 type loginForm struct {
@@ -37,7 +37,7 @@ type loginForm struct {
 
 // login displays the login form and verifies the supplied credentials upon
 // submission.
-func (s *Server) login(w http.ResponseWriter, req *http.Request) {
+func (s *Server) login(w http.ResponseWriter, r *http.Request) {
 	var (
 		form = &loginForm{}
 		ctx  = pongo2.Context{
@@ -45,10 +45,10 @@ func (s *Server) login(w http.ResponseWriter, req *http.Request) {
 			"form":  form,
 		}
 	)
-	if req.Method == http.MethodPost {
+	if r.Method == http.MethodPost {
 		for {
 			var (
-				fieldErrors = parseForm(req.Form, form)
+				fieldErrors = parseForm(r.Form, form)
 				u           = &db.User{}
 			)
 			if len(fieldErrors) != 0 {
@@ -65,12 +65,20 @@ func (s *Server) login(w http.ResponseWriter, req *http.Request) {
 				ctx["error"] = errInvalidCredentials
 				break
 			}
-			session, _ := s.store.Get(req, sessionName)
+			session, _ := s.store.Get(r, sessionName)
 			session.Values[sessionUserID] = u.ID
-			session.Save(req, w)
-			http.Redirect(w, req, "/", http.StatusFound)
+			session.Save(r, w)
+			http.Redirect(w, r, "/", http.StatusFound)
 			return
 		}
 	}
-	s.render(w, req, "users/login.html", ctx)
+	s.render(w, r, "users/login.html", ctx)
+}
+
+// logout logs out the current user.
+func (s *Server) logout(w http.ResponseWriter, r *http.Request) {
+	session, _ := s.store.Get(r, sessionName)
+	session.Values[sessionUserID] = nil
+	session.Save(r, w)
+	http.Redirect(w, r, "/", http.StatusFound)
 }
