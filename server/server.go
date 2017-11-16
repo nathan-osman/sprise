@@ -59,6 +59,12 @@ func New(cfg *Config) (*Server, error) {
 // ServeHTTP does preparatory work for the handlers, attempting to load the
 // current user from the database.
 func (s *Server) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	if req.Method == http.MethodPost {
+		if err := req.ParseForm(); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+	}
 	req = s.loadUser(req)
 	s.router.ServeHTTP(w, req)
 }
