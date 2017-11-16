@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+  {{ block.Super|safe }}
+  <style>
+    body { background-color: #dadada; height: 100%; }
+    .login { height: 100%; }
+    .login .column { max-width: 400px; }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="ui center aligned middle aligned login grid">
+    <div class="column">
+      <form class="ui large form" method="post">
+        <div class="ui padded segment">
+          <h2 class="ui header">{{ title }}</h2>
+          {% import 'macros/form.html' form_error, text, submit %}
+          {{ form_error(error) }}
+          {{ text('Username', "Username", 'user', form.Username, field_errors.Username) }}
+          {{ text('Password', "Password", 'lock', form.Password, field_errors.Password, 'password') }}
+          {{ submit() }}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

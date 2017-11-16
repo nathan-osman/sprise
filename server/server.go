@@ -43,6 +43,7 @@ func New(cfg *Config) (*Server, error) {
 			Handler: r,
 		}
 	)
+	s.router.HandleFunc("/login", s.login)
 	r.PathPrefix("/static").Handler(http.FileServer(HTTP))
 	r.PathPrefix("/").Handler(s)
 	go func() {

@@ -1,0 +1,28 @@
+{# Display a non-field error for a form #}
+{% macro form_error(error) export %}
+  {% if error %}
+    <div class="ui negative message">
+      <strong>Error:</strong> {{ error }}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{# Display an <input> element #}
+{% macro text(name, title, icon, value, errors, type="text") export %}
+  <div class="field{% if errors %} error{% endif %}">
+    <div class="ui left icon input">
+      <i class="{{ icon }} icon"></i>
+      <input type="{{ type }}" placeholder="{{ title }}" name="{{ name }}" value="{{ value }}">
+    </div>
+    {% for error in errors %}
+      <div class="ui red pointing label">
+        {{ error }}
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{# Display a submit button #}
+{% macro submit() export %}
+  <button type="submit" class="ui large fluid primary button">Login</button>
+{% endmacro %}
