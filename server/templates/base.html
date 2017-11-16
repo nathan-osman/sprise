@@ -17,7 +17,32 @@
     {% endblock %}
   </head>
   <body>
+    {% block header %}
+      <div class="ui inverted header segment">
+        <div class="ui container">
+          <div class="ui large secondary inverted pointing menu">
+            <a href="/">
+              <img src="/static/img/logo.png" class="ui logo image">
+            </a>
+            <a href="#" class="item">Photos</a>
+            <a href="#" class="item">Albums</a>
+            <a href="#" class="item">Tags</a>
+            <div class="right menu">
+              {% if user %}
+                <a href="/logout" class="item">Logout</a>
+              {% else %}
+                <a href="/login" class="item">Login</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endblock %}
+
     {% block content %}{% endblock %}
+
+    {% block footer %}
+    {% endblock %}
 
     {% block scripts %}
       <script src="/static/js/jquery.min.js"></script>

@@ -9,12 +9,15 @@
   </style>
 {% endblock %}
 
+{% block header %}{% endblock %}
+
 {% block content %}
   <div class="ui center aligned middle aligned login grid">
     <div class="column">
       <form class="ui large form" method="post">
         <div class="ui padded segment">
           <h2 class="ui header">{{ title }}</h2>
+          <p>Please enter your credentials to login.</p>
           {% import 'macros/form.html' form_error, text, submit %}
           {{ form_error(error) }}
           {{ text('Username', "Username", 'user', form.Username, field_errors.Username) }}
@@ -25,3 +28,5 @@
     </div>
   </div>
 {% endblock %}
+
+{% block footer %}{% endblock %}

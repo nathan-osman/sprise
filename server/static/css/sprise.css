@@ -1,0 +1,14 @@
+.logo {
+  max-height: 48px;
+}
+
+.segment.header {
+  border-radius: 0;
+  padding: 8px;
+}
+
+@media only screen and (min-width: 992px) {
+  .logo {
+    margin-right: 40px;
+  }
+}
