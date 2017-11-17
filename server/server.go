@@ -13,6 +13,7 @@ import (
 
 // Server provides the web interface for the application.
 type Server struct {
+	queueDir    string
 	listener    net.Listener
 	router      *mux.Router
 	store       *sessions.CookieStore
@@ -31,6 +32,7 @@ func New(cfg *Config) (*Server, error) {
 	var (
 		r = mux.NewRouter()
 		s = &Server{
+			queueDir:    cfg.QueueDir,
 			listener:    l,
 			router:      mux.NewRouter(),
 			store:       sessions.NewCookieStore([]byte(cfg.SecretKey)),

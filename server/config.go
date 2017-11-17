@@ -7,6 +7,7 @@ import (
 // Config provides parameters for the web server.
 type Config struct {
 	Addr      string
+	QueueDir  string
 	SecretKey string
 	Conn      *db.Conn
 }

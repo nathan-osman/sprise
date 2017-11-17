@@ -30,15 +30,21 @@ func main() {
 			Usage:  "database driver",
 		},
 		cli.StringFlag{
+			Name:   "queue-dir",
+			Value:  "queue",
+			EnvVar: "QUEUE_DIR",
+			Usage:  "directory for storing files queued for upload",
+		},
+		cli.StringFlag{
+			Name:   "secret-key",
+			EnvVar: "SECRET_KEY",
+			Usage:  "secret key used for cookies",
+		},
+		cli.StringFlag{
 			Name:   "server-addr",
 			Value:  ":8000",
 			EnvVar: "SERVER_ADDR",
 			Usage:  "server address",
-		},
-		cli.StringFlag{
-			Name:   "server-secret-key",
-			EnvVar: "SERVER_SECRET_KEY",
-			Usage:  "secret key used for cookies",
 		},
 	}
 	app.Action = func(c *cli.Context) error {
@@ -70,7 +76,8 @@ func main() {
 		// Initialize the server
 		s, err := server.New(&server.Config{
 			Addr:      c.String("server-addr"),
-			SecretKey: c.String("server-secret-key"),
+			QueueDir:  c.String("queue-dir"),
+			SecretKey: c.String("secret-key"),
 			Conn:      conn,
 		})
 		if err != nil {
