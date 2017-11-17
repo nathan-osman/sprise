@@ -23,6 +23,8 @@
 {% endmacro %}
 
 {# Display a submit button #}
-{% macro submit() export %}
-  <button type="submit" class="ui large fluid primary button">Login</button>
+{% macro submit(action, fluid=false) export %}
+  <button type="submit" class="ui large{% if fluid %} fluid{% endif %} primary button">
+    {{ action }}
+  </button>
 {% endmacro %}

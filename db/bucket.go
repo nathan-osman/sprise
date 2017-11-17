@@ -4,10 +4,10 @@ package db
 // Amazon S3 bucket or Digital Ocean Spaces.
 type Bucket struct {
 	ID              int64
+	Name            string `gorm:"not null"`
 	Endpoint        string `gorm:"not null"`
 	AccessKey       string `gorm:"not null"`
 	SecretAccessKey string `gorm:"not null"`
-	Name            string `gorm:"not null"`
 }
 
 // Buckets retrieves an ordered slice of all buckets in the database.

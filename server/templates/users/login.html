@@ -31,7 +31,7 @@
           {{ form_error(error) }}
           {{ text('Username', "Username", 'user', form.Username, field_errors.Username) }}
           {{ text('Password', "Password", 'lock', form.Password, field_errors.Password, 'password') }}
-          {{ submit() }}
+          {{ submit("Login", fluid=true) }}
         </div>
       </form>
     </div>

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="ui container">
+    <form class="ui form" method="post">
+      {% import 'macros/form.html' form_error, text, submit %}
+      {{ form_error(error) }}
+      {{ text('Name', "Name", 'tag', form.Name, field_errors.Name) }}
+      {{ submit(action) }}
+    </form>
+  </div>
+{% endblock %}

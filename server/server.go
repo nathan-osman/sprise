@@ -51,6 +51,8 @@ func New(cfg *Config) (*Server, error) {
 	s.router.HandleFunc("/upload", s.requireUser(s.upload))
 	s.router.HandleFunc("/upload/ajax", s.requireUser(s.uploadAjax))
 	s.router.HandleFunc("/admin/buckets", s.requireAdmin(s.buckets))
+	s.router.HandleFunc("/admin/buckets/new", s.requireAdmin(s.editBucket))
+	s.router.HandleFunc("/admin/buckets/{id:[0-9]+}/edit", s.requireAdmin(s.editBucket))
 	r.PathPrefix("/static").Handler(http.FileServer(HTTP))
 	r.PathPrefix("/").Handler(s)
 	go func() {

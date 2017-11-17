@@ -7,6 +7,23 @@ import (
 	"strings"
 )
 
+// copyStruct enumerates the exported fields in src and copies their values to
+// the equivalent fields in dst. It is assumed that fields with the same name
+// share the same type, otherwise a panic may result.
+func copyStruct(src interface{}, dst interface{}) {
+	var (
+		srcType = reflect.TypeOf(src).Elem()
+		srcVal  = reflect.ValueOf(src).Elem()
+		dstVal  = reflect.ValueOf(dst).Elem()
+	)
+	for i := 0; i < srcType.NumField(); i++ {
+		fDstVal := dstVal.FieldByName(srcType.Field(i).Name)
+		if fDstVal.Kind() != reflect.Invalid {
+			fDstVal.Set(srcVal.Field(i))
+		}
+	}
+}
+
 // parseForm parses the supplied form, validates it, and stores the values in
 // the supplied struct. The return value contains a map of all errors
 // encountered during parsing.
