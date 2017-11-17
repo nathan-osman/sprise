@@ -15,7 +15,9 @@ func (s *Server) buckets(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.render(w, r, "buckets/index.html", pongo2.Context{
-		"title":   "Buckets",
-		"buckets": buckets,
+		"icon":     "cube",
+		"title":    "Buckets",
+		"subtitle": "Manage photo storage",
+		"buckets":  buckets,
 	})
 }

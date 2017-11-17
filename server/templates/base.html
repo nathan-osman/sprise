@@ -17,7 +17,7 @@
     {% endblock %}
   </head>
   <body>
-    {% block header %}
+    {% block navbar %}
       <div class="ui inverted header segment">
         <div class="ui container">
           <div class="ui large secondary inverted pointing menu">
@@ -46,6 +46,18 @@
                 <a href="/login" class="item">Login</a>
               {% endif %}
             </div>
+          </div>
+        </div>
+      </div>
+    {% endblock %}
+
+    {% block header %}
+      <div class="ui container">
+        <div class="ui dividing header">
+          <i class="{{ icon }} icon"></i>
+          <div class="content">
+            {{ title }}
+            <div class="sub header">{{ subtitle }}</div>
           </div>
         </div>
       </div>
