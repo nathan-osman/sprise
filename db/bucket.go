@@ -9,3 +9,12 @@ type Bucket struct {
 	SecretAccessKey string `gorm:"not null"`
 	Name            string `gorm:"not null"`
 }
+
+// Buckets retrieves an ordered slice of all buckets in the database.
+func (c *Conn) Buckets() ([]*Bucket, error) {
+	var buckets []*Bucket
+	if err := c.Order("name").Find(&buckets).Error; err != nil {
+		return nil, err
+	}
+	return buckets, nil
+}

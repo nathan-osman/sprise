@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="ui container">
+    <div class="ui dividing header">
+      <i class="cube icon"></i>
+      <div class="content">
+        Buckets
+        <div class="sub header">Manage photo storage</div>
+      </div>
+    </div>
+    <p>
+      Use the table below to manage the buckets used for storing photos.
+    </p>
+    <table class="ui table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th class="right aligned">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in buckets %}
+          <tr>
+            <td>{{ b.Name }}</td>
+            <td class="collapsing">
+              <a href="/admin/buckets/{{ b.ID }}/edit" class="ui mini button">
+                Edit
+              </a>
+              <a href="/admin/buckets/{{ b.ID }}/delete" class="ui negative mini button">
+                Delete
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr class="disabled">
+            <td colspan="2">
+              No buckets
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th colspan="2">
+            <a href="/admin/buckets/new" class="ui primary mini button">
+              New
+            </a>
+          </th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% endblock %}

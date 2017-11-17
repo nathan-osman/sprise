@@ -31,7 +31,7 @@ func (s *Server) loadUser(r *http.Request) *http.Request {
 	return r
 }
 
-// requireUser prevents a visitor from accessing a page before loggin in.
+// requireUser prevents a visitor from accessing a page before logging in.
 func (s *Server) requireUser(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Context().Value(contextUser) == nil {
@@ -41,6 +41,17 @@ func (s *Server) requireUser(fn http.HandlerFunc) http.HandlerFunc {
 			fn(w, r)
 		}
 	}
+}
+
+// requireAdmin prevents ordinary users from accessing an admin page.
+func (s *Server) requireAdmin(fn http.HandlerFunc) http.HandlerFunc {
+	return s.requireUser(func(w http.ResponseWriter, r *http.Request) {
+		if !r.Context().Value(contextUser).(*db.User).IsAdmin {
+			http.Error(w, http.StatusText(http.StatusForbidden), http.StatusForbidden)
+		} else {
+			fn(w, r)
+		}
+	})
 }
 
 type loginForm struct {

@@ -27,9 +27,20 @@
             <a href="#" class="item">Photos</a>
             <a href="#" class="item">Albums</a>
             <a href="#" class="item">Tags</a>
-            <div class="right menu">
+            {% if user %}
               <a href="/upload" class="item">Upload</a>
+            {% endif %}
+            <div class="right menu">
               {% if user %}
+                {% if user.IsAdmin %}
+                  <div class="ui simple dropdown item">
+                    Admin
+                    <i class="dropdown icon"></i>
+                    <div class="menu">
+                      <a href="/admin/buckets" class="item">Buckets</a>
+                    </div>
+                  </div>
+                {% endif %}
                 <a href="/logout" class="item">Logout</a>
               {% else %}
                 <a href="/login" class="item">Login</a>
