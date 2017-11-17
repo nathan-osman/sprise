@@ -1,18 +1,28 @@
 .logo {
   max-height: 48px;
+  opacity: 0.7;
 }
 
-.segment.header {
-  border-radius: 0;
-  padding: 8px;
+.logo:hover {
+  opacity: 1;
 }
 
 .text-error {
-    color: #db2828;
+  color: #db2828;
+}
+
+.ui.segment.header {
+  border-radius: 0;
+  margin-bottom: 40px;
+  padding: 8px;
 }
 
 @media only screen and (min-width: 992px) {
   .logo {
     margin-right: 40px;
+  }
+
+  .ui.container {
+    width: 933px !important;
   }
 }
