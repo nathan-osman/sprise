@@ -34,19 +34,23 @@
       </div>
       <div class="column">
         <div class="qq-upload-list-selector">
-          <div class="ui vertical segment">
-            <p>
-              <button class="qq-upload-retry-selector ui right floated button">Retry</button>
-              <button class="qq-upload-cancel-selector ui right floated button">Cancel</button>
-              <span class="qq-upload-file-selector"></span>
-              &mdash;
-              <span class="qq-upload-size-selector"></span>
-              <br>
-              <span class="qq-upload-status-text-selector"></span>
-            </p>
-            <div class="qq-progress-bar-container-selector ui small progress">
-              <div class="bar">
-                <div class="qq-progress-bar-selector progress"></div>
+          <div class="ui clearing segment">
+            <div class="item">
+              <div class="content">
+                <div class="extra">
+                  <button class="qq-upload-retry-selector ui right floated mini retry button">Retry</button>
+                  <button class="qq-upload-cancel-selector ui right floated mini cancel button">Cancel</button>
+                </div>
+                <p>
+                  <span class="qq-upload-file-selector"></span>
+                  &mdash;
+                  <span class="qq-upload-size-selector"></span>
+                </p>
+              </div>
+            </div>
+            <div class="qq-progress-bar-container-selector ui bottom attached progress">
+              <div class="qq-progress-bar-selector bar">
+                <div class="progress"></div>
               </div>
             </div>
           </div>
@@ -59,7 +63,28 @@
 
       // Create the uploader
       var uploader = new qq.FineUploader({
-        element: $('#uploader').get(0)
+        callbacks: {
+          onError: function(id, name, errorReason) {
+            var fileItem = this.getItemByFileId(id);
+            var errorMessage = $('<span>').text(errorReason);
+            $('p', fileItem).append('<br>').append(errorMessage);
+            $('.progress', fileItem).addClass('error');
+          },
+          onStatusChange: function(id, oldStatus, newStatus) {
+            if (newStatus == qq.status.UPLOAD_SUCCESSFUL) {
+              var fileItem = this.getItemByFileId(id);
+              var checkmark = $('<i>').addClass('green checkmark icon');
+              $('.retry', fileItem).remove();
+              $('.cancel', fileItem).text("Dismiss");
+              $('p', fileItem).append(checkmark);
+              $('.progress', fileItem).removeClass('error').addClass('success');
+            }
+          }
+        },
+        element: $('#uploader').get(0),
+        request: {
+          endpoint: '/upload/ajax'
+        }
       });
 
     });

@@ -47,6 +47,7 @@ func New(cfg *Config) (*Server, error) {
 	s.router.HandleFunc("/login", s.login)
 	s.router.HandleFunc("/logout", s.requireUser(s.logout))
 	s.router.HandleFunc("/upload", s.requireUser(s.upload))
+	s.router.HandleFunc("/upload/ajax", s.requireUser(s.uploadAjax))
 	r.PathPrefix("/static").Handler(http.FileServer(HTTP))
 	r.PathPrefix("/").Handler(s)
 	go func() {
