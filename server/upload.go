@@ -2,16 +2,43 @@ package server
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
+	"os"
+	"path"
 	"strconv"
 
 	"github.com/flosch/pongo2"
+	"github.com/nathan-osman/sprise/db"
 )
 
 // upload displays the page for uploading photos.
 func (s *Server) upload(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, "upload.html", pongo2.Context{
 		"title": "Upload",
+	})
+}
+
+// saveUpload creates an upload in the database and copies the contents to the
+// upload queue directory.
+func (s *Server) saveUpload(r io.Reader, filename string) error {
+	return s.conn.Transaction(func(conn *db.Conn) error {
+		u := &db.Upload{
+			Filename: filename,
+		}
+		if err := s.conn.Save(u).Error; err != nil {
+			return err
+		}
+		if err := os.MkdirAll(s.queueDir, 0755); err != nil {
+			return err
+		}
+		f, err := os.Create(path.Join(s.queueDir, strconv.FormatInt(u.ID, 10)))
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+		_, err = io.Copy(f, r)
+		return err
 	})
 }
 
@@ -33,7 +60,10 @@ func (s *Server) uploadAjax(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		defer f.Close()
-		_ = handler
+		if err := s.saveUpload(f, handler.Filename); err != nil {
+			errorMessage = err.Error()
+			break
+		}
 		break
 	}
 	o := make(map[string]interface{})

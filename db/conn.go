@@ -33,9 +33,22 @@ func (c *Conn) Migrate() error {
 	return c.AutoMigrate(
 		&User{},
 		&Bucket{},
+		&Upload{},
 		&Tag{},
 		&Photo{},
 		&Comment{},
 		&Album{},
 	).Error
+}
+
+// Transaction executes the provided function as a single transaction. If an
+// error is returned, the transaction is rolled back. If not, it is committed.
+func (c *Conn) Transaction(fn func(*Conn) error) error {
+	conn := c.Begin()
+	if err := fn(&Conn{DB: conn, log: c.log}); err != nil {
+		conn.Rollback()
+		return err
+	}
+	conn.Commit()
+	return nil
 }
