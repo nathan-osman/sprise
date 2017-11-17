@@ -31,7 +31,7 @@ func main() {
 		},
 		cli.StringFlag{
 			Name:   "queue-dir",
-			Value:  "queue",
+			Value:  "data/queue",
 			EnvVar: "QUEUE_DIR",
 			Usage:  "directory for storing files queued for upload",
 		},
