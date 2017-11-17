@@ -41,11 +41,14 @@
                   <button class="qq-upload-retry-selector ui right floated mini retry button">Retry</button>
                   <button class="qq-upload-cancel-selector ui right floated mini cancel button">Cancel</button>
                 </div>
-                <p>
+                <div class="metadata">
                   <span class="qq-upload-file-selector"></span>
                   &mdash;
                   <span class="qq-upload-size-selector"></span>
-                </p>
+                </div>
+                <div>
+                  <span class="qq-upload-status-text-selector text-error"></span>
+                </div>
               </div>
             </div>
             <div class="qq-progress-bar-container-selector ui bottom attached progress">
@@ -64,11 +67,8 @@
       // Create the uploader
       var uploader = new qq.FineUploader({
         callbacks: {
-          onError: function(id, name, errorReason) {
-            var fileItem = this.getItemByFileId(id);
-            var errorMessage = $('<span>').text(errorReason);
-            $('p', fileItem).append('<br>').append(errorMessage);
-            $('.progress', fileItem).addClass('error');
+          onError: function(id,) {
+            $('.progress', this.getItemByFileId(id)).addClass('error');
           },
           onStatusChange: function(id, oldStatus, newStatus) {
             if (newStatus == qq.status.UPLOAD_SUCCESSFUL) {
@@ -76,7 +76,7 @@
               var checkmark = $('<i>').addClass('green checkmark icon');
               $('.retry', fileItem).remove();
               $('.cancel', fileItem).text("Dismiss");
-              $('p', fileItem).append(checkmark);
+              $('.metadata', fileItem).append(checkmark);
               $('.progress', fileItem).removeClass('error').addClass('success');
             }
           }

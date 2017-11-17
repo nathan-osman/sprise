@@ -7,6 +7,10 @@
   padding: 8px;
 }
 
+.text-error {
+    color: #db2828;
+}
+
 @media only screen and (min-width: 992px) {
   .logo {
     margin-right: 40px;
