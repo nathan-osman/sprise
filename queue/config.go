@@ -6,5 +6,6 @@ import (
 
 // Config provides parameters for the upload queue.
 type Config struct {
-	Conn *db.Conn
+	QueueDir string
+	Conn     *db.Conn
 }

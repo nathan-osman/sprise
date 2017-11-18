@@ -65,12 +65,10 @@ func main() {
 		}
 
 		// Initialize the upload queue
-		q, err := queue.New(&queue.Config{
-			Conn: conn,
+		q := queue.New(&queue.Config{
+			QueueDir: c.String("queue-dir"),
+			Conn:     conn,
 		})
-		if err != nil {
-			return err
-		}
 		defer q.Close()
 
 		// Initialize the server
@@ -79,6 +77,7 @@ func main() {
 			QueueDir:  c.String("queue-dir"),
 			SecretKey: c.String("secret-key"),
 			Conn:      conn,
+			Queue:     q,
 		})
 		if err != nil {
 			return err

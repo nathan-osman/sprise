@@ -66,6 +66,7 @@ func (s *Server) uploadAjax(w http.ResponseWriter, r *http.Request) {
 			errorMessage = err.Error()
 			break
 		}
+		s.queue.Trigger()
 		break
 	}
 	o := make(map[string]interface{})

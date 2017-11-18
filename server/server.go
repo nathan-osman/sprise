@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/nathan-osman/sprise/db"
+	"github.com/nathan-osman/sprise/queue"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,6 +21,7 @@ type Server struct {
 	templateSet *pongo2.TemplateSet
 	log         *logrus.Entry
 	conn        *db.Conn
+	queue       *queue.Queue
 	stoppedCh   chan bool
 }
 
@@ -39,6 +41,7 @@ func New(cfg *Config) (*Server, error) {
 			templateSet: pongo2.NewSet("", &b0xLoader{}),
 			log:         logrus.WithField("context", "server"),
 			conn:        cfg.Conn,
+			queue:       cfg.Queue,
 			stoppedCh:   make(chan bool),
 		}
 		server = http.Server{
