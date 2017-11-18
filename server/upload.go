@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"time"
 
 	"github.com/flosch/pongo2"
 	"github.com/nathan-osman/sprise/db"
@@ -26,6 +27,7 @@ func (s *Server) upload(w http.ResponseWriter, r *http.Request) {
 func (s *Server) saveUpload(r io.Reader, filename string) error {
 	return s.conn.Transaction(func(conn *db.Conn) error {
 		u := &db.Upload{
+			Date:     time.Now(),
 			Filename: filename,
 		}
 		if err := s.conn.Save(u).Error; err != nil {

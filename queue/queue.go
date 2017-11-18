@@ -1,6 +1,8 @@
 package queue
 
 import (
+	"time"
+
 	"github.com/nathan-osman/sprise/db"
 	"github.com/sirupsen/logrus"
 )
@@ -20,7 +22,23 @@ func (q *Queue) run() {
 	defer q.log.Info("queue has stopped")
 	q.log.Info("starting queue")
 	for {
+		err := func() error {
+			u, err := q.selectUpload()
+			if err != nil {
+				return err
+			}
+			if u == nil {
+				return nil
+			}
+			return q.processUpload(u)
+		}()
+		var retryChan <-chan time.Time
+		if err != nil {
+			q.log.Error(err.Error())
+			retryChan = time.After(30 * time.Second)
+		}
 		select {
+		case <-retryChan:
 		case <-q.triggerChan:
 		case <-q.stopChan:
 			return
@@ -43,7 +61,10 @@ func New(cfg *Config) *Queue {
 
 // Trigger indicates that a new item has been queued.
 func (q *Queue) Trigger() {
-	q.triggerChan <- true
+	select {
+	case q.triggerChan <- true:
+	default:
+	}
 }
 
 // Close shuts down the queue.
