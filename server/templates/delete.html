@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="ui container">
+    <p>Are you sure you want to delete this item?</p>
+    <form class="ui form" method="post">
+        {% import 'macros/form.html' form_error, text, submit %}
+        {{ submit("Delete") }}
+    </form>
+  </div>
+{% endblock %}

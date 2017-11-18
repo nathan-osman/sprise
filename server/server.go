@@ -53,6 +53,7 @@ func New(cfg *Config) (*Server, error) {
 	s.router.HandleFunc("/admin/buckets", s.requireAdmin(s.buckets))
 	s.router.HandleFunc("/admin/buckets/new", s.requireAdmin(s.editBucket))
 	s.router.HandleFunc("/admin/buckets/{id:[0-9]+}/edit", s.requireAdmin(s.editBucket))
+	s.router.HandleFunc("/admin/buckets/{id:[0-9]+}/delete", s.requireAdmin(s.deleteBucket))
 	r.PathPrefix("/static").Handler(http.FileServer(HTTP))
 	r.PathPrefix("/").Handler(s)
 	go func() {

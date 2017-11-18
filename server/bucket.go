@@ -26,15 +26,15 @@ func (s *Server) buckets(w http.ResponseWriter, r *http.Request) {
 }
 
 type editBucketForm struct {
-	Name            string
-	Endpoint        string
-	AccessKey       string
-	SecretAccessKey string
+	Name            string `form:"required"`
+	Endpoint        string `form:"required"`
+	AccessKey       string `form:"required"`
+	SecretAccessKey string `form:"required"`
 }
 
 // editBucket provides a form for creating or editing buckets.
 func (s *Server) editBucket(w http.ResponseWriter, r *http.Request) {
-	s.conn.Transaction(func(conn *db.Conn) error {
+	err := s.conn.Transaction(func(conn *db.Conn) error {
 		var (
 			id   = mux.Vars(r)["id"]
 			b    = &db.Bucket{}
@@ -45,8 +45,7 @@ func (s *Server) editBucket(w http.ResponseWriter, r *http.Request) {
 		)
 		if len(id) != 0 {
 			if err := conn.Find(b, id).Error; err != nil {
-				http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
-				return nil
+				return err
 			}
 			copyStruct(b, form)
 			ctx["icon"] = "write"
@@ -60,16 +59,56 @@ func (s *Server) editBucket(w http.ResponseWriter, r *http.Request) {
 			ctx["action"] = "Create"
 		}
 		if r.Method == http.MethodPost {
-			parseForm(r.Form, form)
-			copyStruct(form, b)
-			if err := conn.Save(b).Error; err != nil {
-				http.Error(w, err.Error(), http.StatusInternalServerError)
+			for {
+				fieldErrors := parseForm(r.Form, form)
+				if len(fieldErrors) != 0 {
+					ctx["field_errors"] = fieldErrors
+					break
+				}
+				copyStruct(form, b)
+				if err := conn.Save(b).Error; err != nil {
+					return err
+				}
+				http.Redirect(w, r, "/admin/buckets", http.StatusFound)
 				return nil
 			}
-			http.Redirect(w, r, "/admin/buckets", http.StatusFound)
-			return nil
 		}
 		s.render(w, r, "buckets/edit.html", ctx)
 		return nil
 	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+// deleteBucket enables an admin to remove a bucket and all data associated
+// with it.
+func (s *Server) deleteBucket(w http.ResponseWriter, r *http.Request) {
+	err := s.conn.Transaction(func(conn *db.Conn) error {
+		var (
+			id = mux.Vars(r)["id"]
+			b  = &db.Bucket{}
+		)
+		if err := s.conn.Find(b, id).Error; err != nil {
+			return err
+		}
+		if r.Method == http.MethodPost {
+			for {
+				if err := s.conn.Delete(b).Error; err != nil {
+					return err
+				}
+				http.Redirect(w, r, "/admin/buckets", http.StatusFound)
+				return nil
+			}
+		}
+		s.render(w, r, "delete.html", pongo2.Context{
+			"icon":     "trash",
+			"title":    fmt.Sprintf("Delete %s", b.Name),
+			"subtitle": "Delete a bucket and its associated items",
+		})
+		return nil
+	})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
