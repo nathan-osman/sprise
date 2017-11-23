@@ -9,6 +9,7 @@ import (
 
 // Queue manages uploads to S3 / Spaces.
 type Queue struct {
+	queueDir    string
 	log         *logrus.Entry
 	conn        *db.Conn
 	triggerChan chan bool
@@ -49,6 +50,7 @@ func (q *Queue) run() {
 // New creates a new upload queue.
 func New(cfg *Config) *Queue {
 	q := &Queue{
+		queueDir:    cfg.QueueDir,
 		log:         logrus.WithField("context", "queue"),
 		conn:        cfg.Conn,
 		triggerChan: make(chan bool, 1),
