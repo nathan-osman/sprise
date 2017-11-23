@@ -18,3 +18,8 @@ func (c *Conn) Buckets() ([]*Bucket, error) {
 	}
 	return buckets, nil
 }
+
+// String returns a string representation of the bucket.
+func (b *Bucket) String() string {
+	return b.Name
+}
