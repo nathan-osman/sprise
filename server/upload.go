@@ -15,20 +15,27 @@ import (
 
 // upload displays the page for uploading photos.
 func (s *Server) upload(w http.ResponseWriter, r *http.Request) {
+	buckets, err := s.conn.Buckets()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 	s.render(w, r, "upload.html", pongo2.Context{
 		"icon":     "upload",
 		"title":    "Upload",
 		"subtitle": "Transfer files to Sprise",
+		"buckets":  buckets,
 	})
 }
 
 // saveUpload creates an upload in the database and copies the contents to the
 // upload queue directory.
-func (s *Server) saveUpload(r io.Reader, filename string) error {
+func (s *Server) saveUpload(r io.Reader, filename string, bucketID int64) error {
 	return s.conn.Transaction(func(conn *db.Conn) error {
 		u := &db.Upload{
 			Date:     time.Now(),
 			Filename: filename,
+			BucketID: bucketID,
 		}
 		if err := s.conn.Save(u).Error; err != nil {
 			return err
@@ -64,7 +71,8 @@ func (s *Server) uploadAjax(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		defer f.Close()
-		if err := s.saveUpload(f, handler.Filename); err != nil {
+		bucketID, _ := strconv.ParseInt(r.Form.Get("bucket_id"), 10, 64)
+		if err := s.saveUpload(f, handler.Filename, bucketID); err != nil {
 			errorMessage = err.Error()
 			break
 		}

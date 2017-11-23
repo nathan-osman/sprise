@@ -33,6 +33,9 @@
         </div>
       </div>
       <div class="column">
+        {% import 'macros/form.html' selection %}
+        {{ selection('bucket_id', "Bucket", 0, buckets) }}
+        <div class="ui hidden divider"></div>
         <div class="qq-upload-list-selector">
           <div class="ui clearing segment">
             <div class="item">
@@ -83,9 +86,17 @@
         },
         element: $('#uploader').get(0),
         request: {
-          endpoint: '/upload/ajax'
+          endpoint: '/upload/ajax',
+          params: {
+            bucket_id: function() {
+              return $('[name=bucket_id]').val();
+            }
+          },
         }
       });
+
+      // Initialize the dropdown
+      $('select').dropdown();
 
     });
   </script>

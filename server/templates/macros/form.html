@@ -22,6 +22,19 @@
   </div>
 {% endmacro %}
 
+{# Display a selection element #}
+{% macro selection(name, title, value, items) export %}
+  <div class="field">
+    <select name="{{ name }}" class="ui fluid dropdown">
+      {% for i in items %}
+        <option value="{{ i.ID }}"{% if i.ID == value %} selected{% endif %}>
+          {{ i }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+{% endmacro %}
+
 {# Display a submit button #}
 {% macro submit(action, fluid=false) export %}
   <button type="submit" class="ui large{% if fluid %} fluid{% endif %} primary button">
