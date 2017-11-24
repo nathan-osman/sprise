@@ -4,11 +4,19 @@
 
 {% block content %}
   <div class="ui container">
-    <h4>Recent Photos</h4>
+    <h2 class="ui dividing header">
+      Recent Photos
+      <div class="sub header">
+        Photos that have recently been uploaded
+      </div>
+    </h2>
     <div class="ui six column grid">
       {% for p in photos %}
         <div class="column">
-          <img src="{{ p.ThumbURL }}" class="ui middle aligned image">
+          <a href="/photos/{{ p.ID }}">
+            <div class="square"
+                style="background-image: url({{ p.ThumbURL }})"></div>
+          </a>
         </div>
       {% endfor %}
     </div>

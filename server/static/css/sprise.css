@@ -7,6 +7,17 @@
   opacity: 1;
 }
 
+.square {
+  background-size: cover;
+  width: 100%;
+}
+
+.square:after {
+  content: '';
+  display: block;
+  padding-bottom: 100%;
+}
+
 .text-error {
   color: #db2828;
 }
