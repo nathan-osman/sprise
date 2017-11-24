@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"path"
 	"strconv"
 	"time"
 
@@ -43,7 +42,7 @@ func (s *Server) saveUpload(r io.Reader, filename string, bucketID int64) error 
 		if err := os.MkdirAll(s.queueDir, 0755); err != nil {
 			return err
 		}
-		f, err := os.Create(path.Join(s.queueDir, strconv.FormatInt(u.ID, 10)))
+		f, err := os.Create(u.Path(s.queueDir))
 		if err != nil {
 			return err
 		}
