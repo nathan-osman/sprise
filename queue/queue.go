@@ -24,14 +24,18 @@ func (q *Queue) run() {
 	q.log.Info("starting queue")
 	for {
 		err := func() error {
-			u, err := q.selectUpload()
-			if err != nil {
-				return err
+			for {
+				u, err := q.selectUpload()
+				if err != nil {
+					return err
+				}
+				if u == nil {
+					return nil
+				}
+				if err := q.processUpload(u); err != nil {
+					return err
+				}
 			}
-			if u == nil {
-				return nil
-			}
-			return q.processUpload(u)
 		}()
 		var retryChan <-chan time.Time
 		if err != nil {

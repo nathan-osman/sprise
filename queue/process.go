@@ -56,12 +56,12 @@ func (q *Queue) processUpload(u *db.Upload) error {
 		return err
 	}
 	q.log.Debugf("uploading \"%s\"...", p.Filename)
-	p.URL, err = uploadFile(p.Name(), name, p.Bucket)
+	p.URL, err = uploadFile(name, p.Bucket)
 	if err != nil {
 		return err
 	}
 	q.log.Debugf("uploading \"%s\" thumbnail...", p.Filename)
-	p.ThumbURL, err = uploadFile(p.ThumbName(), thumbName, p.Bucket)
+	p.ThumbURL, err = uploadFile(thumbName, p.Bucket)
 	if err != nil {
 		return err
 	}
