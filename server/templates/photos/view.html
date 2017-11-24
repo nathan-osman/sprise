@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="ui container">
+    <div class="ui grid">
+      <div class="ten wide column">
+        <img src="{{ photo.URL }}" class="ui image">
+      </div>
+      <div class="six wide column">
+        <div class="ui segment">
+          <div class="ui very relaxed divided list">
+
+            <!-- Photo date -->
+            <div class="item">
+              <i class="middle aligned calendar icon"></i>
+              <div class="content">
+                <div class="header">Date</div>
+                <div class="description">{{ photo.Date }}</div>
+              </div>
+            </div>
+
+            <!-- Camera make / model -->
+            <div class="item">
+              <i class="middle aligned photo icon"></i>
+              <div class="content">
+                <div class="header">Camera</div>
+                <div class="description">{{ photo.Camera }}</div>
+              </div>
+            </div>
+
+            <!-- Resolution -->
+            <div class="item">
+              <i class="middle aligned expand icon"></i>
+              <div class="content">
+                <div class="header">Resolution</div>
+                <div class="description">
+                  {{ photo.Width }}x{{ photo.Height }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

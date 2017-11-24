@@ -13,7 +13,7 @@
     <div class="ui six column grid">
       {% for p in photos %}
         <div class="column">
-          <a href="/photos/{{ p.ID }}">
+          <a href="/photos/{{ p.ID }}" title="{{ p.Filename }}">
             <div class="square"
                  style="background-image: url({{ p.ThumbURL }})"></div>
           </a>
