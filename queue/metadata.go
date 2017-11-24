@@ -16,12 +16,12 @@ type metadata struct {
 
 // parseMetadata reads the EXIF data from an image.
 func parseMetadata(name string) (*metadata, error) {
-	f, err := os.Open(name)
+	r, err := os.Open(name)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
-	x, err := exif.Decode(f)
+	defer r.Close()
+	x, err := exif.Decode(r)
 	if err != nil {
 		return nil, err
 	}

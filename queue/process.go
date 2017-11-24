@@ -9,7 +9,7 @@ import (
 // found, nil is returned.
 func (q *Queue) selectUpload() (*db.Upload, error) {
 	u := &db.Upload{}
-	if err := q.conn.Order("date").Find(u).Error; err != nil {
+	if err := q.conn.Preload("Bucket").Order("date").Find(u).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, nil
 		}
@@ -18,9 +18,57 @@ func (q *Queue) selectUpload() (*db.Upload, error) {
 	return u, nil
 }
 
-// processUpload processes the upload.
-func (q *Queue) processUpload(u *db.Upload) error {
-	//...
+// createPhoto creates a Photo object and thumbnail from an upload.
+func (q *Queue) createPhoto(name, thumbName string, u *db.Upload) (*db.Photo, error) {
+	m, err := parseMetadata(name)
+	if err != nil {
+		return nil, err
+	}
+	t, err := generateThumbnail(name, thumbName, 200, 200)
+	if err != nil {
+		return nil, err
+	}
+	return &db.Photo{
+		Date:     m.Date,
+		Filename: u.Filename,
+		Width:    t.originalWidth,
+		Height:   t.originalHeight,
+		Camera:   m.Camera,
+		Bucket:   u.Bucket,
+		BucketID: u.BucketID,
+	}, nil
+}
 
-	return nil
+// processUpload processes an upload. This includes extracting the metadata
+// from the image, generating a thumbnail, and uploading it to the intended
+// bucket.
+func (q *Queue) processUpload(u *db.Upload) error {
+	q.log.Debugf("processing \"%s\"...", u.Filename)
+	var (
+		name      = u.Path(q.queueDir)
+		thumbName = u.ThumbPath(q.queueDir)
+	)
+	p, err := q.createPhoto(name, thumbName, u)
+	if err != nil {
+		if err := q.conn.Delete(u).Error; err != nil {
+			q.log.Error(err.Error())
+		}
+		return err
+	}
+	q.log.Debugf("uploading \"%s\"...", p.Filename)
+	p.URL, err = uploadFile(p.Name(), name, p.Bucket)
+	if err != nil {
+		return err
+	}
+	q.log.Debugf("uploading \"%s\" thumbnail...", p.Filename)
+	p.ThumbURL, err = uploadFile(p.ThumbName(), thumbName, p.Bucket)
+	if err != nil {
+		return err
+	}
+	return q.conn.Transaction(func(conn *db.Conn) error {
+		if err := conn.Delete(u).Error; err != nil {
+			return err
+		}
+		return conn.Save(p).Error
+	})
 }
