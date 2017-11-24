@@ -4,6 +4,13 @@
 
 {% block content %}
   <div class="ui container">
-    Hello, world!
+    <h4>Recent Photos</h4>
+    <div class="ui six column grid">
+      {% for p in photos %}
+        <div class="column">
+          <img src="{{ p.ThumbURL }}" class="ui middle aligned image">
+        </div>
+      {% endfor %}
+    </div>
   </div>
 {% endblock %}

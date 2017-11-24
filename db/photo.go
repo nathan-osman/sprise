@@ -21,6 +21,19 @@ type Photo struct {
 	Tags     []*Tag    `gorm:"many2many:photo_tags;"`
 }
 
+// Photos retrieves an ordered slice of all photos in the database.
+func (c *Conn) Photos(limit int) ([]*Photo, error) {
+	var photos []*Photo
+	if err := c.
+		Order("date DESC").
+		Limit(limit).
+		Find(&photos).
+		Error; err != nil {
+		return nil, err
+	}
+	return photos, nil
+}
+
 // Name returns the object name used for the photo in the bucket.
 func (p *Photo) Name() string {
 	return strconv.FormatInt(p.ID, 10)
