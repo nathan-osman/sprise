@@ -9,9 +9,7 @@
 
 .square {
   background-size: cover;
-  position: relative;
-  top: 0;
-  transition: top 100ms;
+  transition: transform 100ms;
   width: 100%;
 }
 
@@ -22,8 +20,8 @@
 }
 
 .square:hover {
-  top: -10px;
-  transition: top 200ms;
+  transform: scale(1.1);
+  transition: transform 200ms;
 }
 
 .text-error {
