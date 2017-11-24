@@ -1,6 +1,8 @@
 package db
 
 import (
+	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -17,4 +19,15 @@ type Photo struct {
 	Bucket   *Bucket   `gorm:"ForeignKey:BucketID"`
 	BucketID int64     `sql:"type:int REFERENCES buckets(id) ON DELETE CASCADE"`
 	Tags     []*Tag    `gorm:"many2many:photo_tags;"`
+}
+
+// Name returns the object name used for the photo in the bucket.
+func (p *Photo) Name() string {
+	return strconv.FormatInt(p.ID, 10)
+}
+
+// ThumbName returns the object name used for the photo's thumbnail in the
+// bucket.
+func (p *Photo) ThumbName() string {
+	return fmt.Sprintf("%s-thumb", p.Name())
 }
