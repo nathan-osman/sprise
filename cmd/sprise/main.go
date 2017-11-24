@@ -9,6 +9,7 @@ import (
 	"github.com/nathan-osman/sprise/db"
 	"github.com/nathan-osman/sprise/queue"
 	"github.com/nathan-osman/sprise/server"
+	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
 
@@ -29,6 +30,11 @@ func main() {
 			EnvVar: "DB_DRIVER",
 			Usage:  "database driver",
 		},
+		cli.BoolFlag{
+			Name:   "debug",
+			EnvVar: "DEBUG",
+			Usage:  "enable debug logging",
+		},
 		cli.StringFlag{
 			Name:   "queue-dir",
 			Value:  "data/queue",
@@ -46,6 +52,12 @@ func main() {
 			EnvVar: "SERVER_ADDR",
 			Usage:  "server address",
 		},
+	}
+	app.Before = func(c *cli.Context) error {
+		if c.Bool("debug") {
+			logrus.SetLevel(logrus.DebugLevel)
+		}
+		return nil
 	}
 	app.Action = func(c *cli.Context) error {
 
