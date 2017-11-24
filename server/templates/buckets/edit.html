@@ -6,6 +6,7 @@
       {% import 'macros/form.html' form_error, text, submit %}
       {{ form_error(error) }}
       {{ text('Name', "Name", 'tag', form.Name, field_errors.Name) }}
+      {{ text('Region', "Region", 'world', form.Name, field_errors.Name) }}
       {{ text('Endpoint', "Endpoint", 'linkify', form.Endpoint, field_errors.Endpoint) }}
       {{ text('AccessKey', "Access Key", 'privacy', form.AccessKey, field_errors.AccessKey) }}
       {{ text('SecretAccessKey', "Secret Access Key", 'privacy', form.SecretAccessKey, field_errors.SecretAccessKey) }}

@@ -24,16 +24,18 @@ func uploadFile(name, filename string, b *db.Bucket) (string, error) {
 			"",
 		),
 		Endpoint: aws.String(b.Endpoint),
+		Region:   aws.String(b.Region),
 	})
 	if err != nil {
 		return "", err
 	}
 	uploader := s3manager.NewUploader(sess)
 	result, err := uploader.Upload(&s3manager.UploadInput{
-		Bucket:    aws.String(b.Name),
-		Key:       aws.String(name),
-		Body:      f,
-		GrantRead: aws.String("http://acs.amazonaws.com/groups/global/AllUsers"),
+		Bucket:      aws.String(b.Name),
+		Key:         aws.String(name),
+		ContentType: aws.String("image/jpeg"), // TODO: should not be hardcoded
+		GrantRead:   aws.String("uri=http://acs.amazonaws.com/groups/global/AllUsers"),
+		Body:        f,
 	})
 	if err != nil {
 		return "", err

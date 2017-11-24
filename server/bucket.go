@@ -27,6 +27,7 @@ func (s *Server) buckets(w http.ResponseWriter, r *http.Request) {
 
 type editBucketForm struct {
 	Name            string `form:"required"`
+	Region          string `form:"required"`
 	Endpoint        string `form:"required"`
 	AccessKey       string `form:"required"`
 	SecretAccessKey string `form:"required"`

@@ -5,6 +5,7 @@ package db
 type Bucket struct {
 	ID              int64
 	Name            string `gorm:"not null"`
+	Region          string `gorm:"not null"`
 	Endpoint        string `gorm:"not null"`
 	AccessKey       string `gorm:"not null"`
 	SecretAccessKey string `gorm:"not null"`
