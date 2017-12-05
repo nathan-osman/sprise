@@ -1,4 +1,4 @@
-![Sprise logo](https://raw.githubusercontent.com/nathan-osman/sprise/master/server/static/img/logo.png)
+![Sprise logo](https://raw.githubusercontent.com/nathan-osman/sprise/master/img/logo.png)
 
 [![GoDoc](https://godoc.org/github.com/nathan-osman/sprise?status.svg)](https://godoc.org/github.com/nathan-osman/sprise)
 [![MIT License](http://img.shields.io/badge/license-MIT-9370d8.svg?style=flat)](http://opensource.org/licenses/MIT)
