@@ -1,7 +1,6 @@
 package queue
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -26,20 +25,15 @@ func parseMetadata(name string) (*metadata, error) {
 		return nil, err
 	}
 	var (
-		photoDate, _        = x.DateTime()
-		photoCameraMake, _  = x.Get(exif.Make)
-		photoCameraModel, _ = x.Get(exif.Model)
-		photoCamera         string
+		date, _      = x.DateTime()
+		cameraTag, _ = x.Get(exif.Model)
+		camera       string
 	)
-	if photoCameraMake != nil && photoCameraModel != nil {
-		photoCamera = fmt.Sprintf(
-			"%s %s",
-			photoCameraMake.String(),
-			photoCameraModel.String(),
-		)
+	if cameraTag != nil {
+		camera, _ = cameraTag.StringVal()
 	}
 	return &metadata{
-		Date:   photoDate,
-		Camera: photoCamera,
+		Date:   date,
+		Camera: camera,
 	}, nil
 }
